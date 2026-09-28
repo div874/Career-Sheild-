@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerShield AI — Resume Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge">🛡️ CareerShield AI • Feature 1</div>
+            <h1>Resume PDF Upload</h1>
+            <p class="subtitle">Upload your PDF resume to extract clean raw text and initiate candidate intelligence.</p>
+
+        </header>
+
+        <div class="card">
+            <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/>
+                    </svg>
+                </div>
+                <div class="dropzone-text">Drag & drop your PDF Resume here</div>
+                <div class="dropzone-subtext">Supports PDF files (.pdf) up to 10MB</div>
+                <button class="btn-browse" onclick="document.getElementById('fileInput').click()">Select PDF File</button>
+                <input type="file" id="fileInput" accept=".pdf">
+            </div>
+
+            <div class="status-box loading" id="loadingStatus">
+                <div class="spinner"></div>
+                <div>Processing PDF and extracting text content...</div>
+            </div>
+
+            <div class="status-box error" id="errorStatus"></div>
+        </div>
+
+        <div class="card result-section" id="resultSection">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Uploaded File</div>
+                    <div class="stat-value" id="statFilename" style="font-size: 1rem; word-break: break-all;">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">File Size</div>
+                    <div class="stat-value" id="statFileSize">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Word Count</div>
+                    <div class="stat-value" id="statWordCount">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Character Count</div>
+                    <div class="stat-value" id="statCharCount">-</div>
+                </div>
+            </div>
+
+            <div class="text-preview-header">
+                <div class="text-preview-title">📄 Extracted Resume Text</div>
+                <button class="btn-copy" onclick="copyExtractedText()">📋 Copy Text</button>
+            </div>
+            <pre class="extracted-text" id="extractedTextDisplay"></pre>
+        </div>
+    </div>
+
+    <script>
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const loadingStatus = document.getElementById('loadingStatus');
+        const errorStatus = document.getElementById('errorStatus');
+        const resultSection = document.getElementById('resultSection');
+
+        const statFilename = document.getElementById('statFilename');
+        const statFileSize = document.getElementById('statFileSize');
+        const statWordCount = document.getElementById('statWordCount');
+        const statCharCount = document.getElementById('statCharCount');
+        const extractedTextDisplay = document.getElementById('extractedTextDisplay');
+
+        // Drag & drop handlers
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('dragover');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileUpload(e.target.files[0]);
+            }
+        });
+
+        async function handleFileUpload(file) {
+            if (!file.name.toLowerCase().endsWith('.pdf')) {
+                showError('Only PDF (.pdf) files are supported.');
+                return;
+            }
+
+            // Hide previous results & error
+            errorStatus.style.display = 'none';
+            resultSection.style.display = 'none';
+            loadingStatus.style.display = 'flex';
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/v1/resume/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Failed to process resume');
+                }
+
+                displayResults(data);
+            } catch (err) {
+                showError(err.message);
+            } finally {
+                loadingStatus.style.display = 'none';
+            }
+        }
+
+        function displayResults(data) {
+            statFilename.textContent = data.filename;
+            statFileSize.textContent = (data.file_size_bytes / 1024).toFixed(1) + ' KB';
+            statWordCount.textContent = data.word_count.toLocaleString();
+            statCharCount.textContent = data.character_count.toLocaleString();
+            extractedTextDisplay.textContent = data.extracted_text || '(No text extracted from PDF)';
+            
+            resultSection.style.display = 'block';
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showError(msg) {
+            errorStatus.textContent = `⚠️ Error: ${msg}`;
+            errorStatus.style.display = 'block';
+        }
+
+        function copyExtractedText() {
+            const text = extractedTextDisplay.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied extracted resume text to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>

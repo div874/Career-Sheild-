@@ -1,0 +1,291 @@
+:root {
+    --bg-primary: #0a0d14;
+    --bg-card: rgba(18, 24, 38, 0.75);
+    --bg-card-border: rgba(255, 255, 255, 0.08);
+    --accent-cyan: #00f2fe;
+    --accent-indigo: #4facfe;
+    --accent-purple: #7f53ac;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --success: #10b981;
+    --error: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    background-color: var(--bg-primary);
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(79, 172, 254, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(127, 83, 172, 0.12) 0%, transparent 40%);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    max-width: 900px;
+    width: 100%;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(79, 172, 254, 0.1);
+    border: 1px solid rgba(79, 172, 254, 0.3);
+    color: var(--accent-cyan);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 9999px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff 0%, var(--accent-cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+p.subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.nav-btn {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-card-border);
+    backdrop-filter: blur(16px);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.dropzone {
+    border: 2px dashed rgba(79, 172, 254, 0.3);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: rgba(15, 23, 42, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.dropzone:hover, .dropzone.dragover {
+    border-color: var(--accent-cyan);
+    background: rgba(79, 172, 254, 0.06);
+    transform: translateY(-2px);
+}
+
+.dropzone-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 16px rgba(79, 172, 254, 0.25);
+}
+
+.dropzone-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: #ffffff;
+}
+
+.dropzone-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+}
+
+.dropzone-subtext {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+#fileInput {
+    display: none;
+}
+
+.btn-browse {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6rem 1.4rem;
+    background: linear-gradient(135deg, var(--accent-indigo), var(--accent-cyan));
+    color: #090d16;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-browse:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 14px rgba(0, 242, 254, 0.4);
+}
+
+.status-box {
+    display: none;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.status-box.loading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(79, 172, 254, 0.1);
+    border: 1px solid rgba(79, 172, 254, 0.3);
+    color: var(--accent-cyan);
+}
+
+.status-box.error {
+    display: block;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-color: var(--accent-cyan);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.result-section {
+    display: none;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--bg-card-border);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+}
+
+.text-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.text-preview-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.btn-copy {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-copy:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+pre.extracted-text {
+    background: #06090e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    color: #cbd5e1;
+    max-height: 400px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+pre.extracted-text::-webkit-scrollbar {
+    width: 8px;
+}
+
+pre.extracted-text::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
